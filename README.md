@@ -54,3 +54,13 @@ To use TypeScript there is **tsconfig.json** file required. So I created one. Se
 
 There is a build script included, see **build.sh** file content.
 The package is build and copied to user's home directory.
+
+#### Testing
+
+To test the library, execute the following command
+
+```
+npm run test
+```
+
+
