@@ -1,7 +1,7 @@
 /*
  *
  */
-import {$DIV, $ELEMENT, $UUID} from "./utils";
+import {$NEW_DIV, $NEW_ELEMENT, $UUID} from "./utils";
 
 /**
  * Base class for all components.
@@ -22,7 +22,7 @@ export class Component {
      */
     constructor(className: string, htmlElementName?: string) {
         this.componentId = $UUID();
-        this.componentElement = htmlElementName ? $ELEMENT(htmlElementName) : $DIV();
+        this.componentElement = htmlElementName ? $NEW_ELEMENT(htmlElementName) : $NEW_DIV();
         this.componentElement.id = this.componentId;
         this.componentElement.className = className;
     }

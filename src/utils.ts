@@ -26,21 +26,50 @@ export function $ID(elementId: string): HTMLElement | null {
 }
 
 /**
+ * Returns HTML DIV element with specified identifier.
+ *
+ * @param elementId Identifier of HTML DIV element in document.
+ * @return HTML DIV element with specified identifier or null.
+ */
+export function $DIV(elementId: string): HTMLDivElement | null {
+    const element = document.getElementById(elementId);
+    return element ? element as HTMLDivElement : null;
+}
+
+/**
+ * Returns HTML PRE element with specified identifier.
+ *
+ * @param elementId Identifier of HTML PRE element in document.
+ * @return HTML PRE element with specified identifier or null.
+ */
+export function $PRE(elementId: string): HTMLPreElement | null {
+    const element = document.getElementById(elementId);
+    return element ? element as HTMLPreElement : null;
+}
+
+/**
  * Creates HTML element with specified name.
  *
  * @return HTML element.
  */
-export function $ELEMENT(elementName: string): HTMLElement {
+export function $NEW_ELEMENT(elementName: string): HTMLElement {
     return document.createElement(elementName);
 }
 
 /**
- * Creates HTML <div> element.
+ * Creates HTML DIV element.
  *
- * @return HTML <div> element.
+ * @return HTML DIV element.
  */
-export function $DIV(): HTMLElement {
+export function $NEW_DIV(): HTMLDivElement {
     return document.createElement('div');
+}
+
+/**
+ *
+ */
+export function $INPUT(element: HTMLElement, handler: () => void) {
+    element.addEventListener("input", handler, true);
 }
 
 /**
@@ -53,6 +82,20 @@ export function $TOUCH(element: HTMLElement, handler: () => void) {
 /**
  *
  */
+export function $MOUSE_DOWN(element: HTMLElement, handler: (event: MouseEvent) => void) {
+    element.addEventListener("mousedown", handler, true);
+}
+
+/**
+ *
+ */
+export function $MOUSE_UP(element: HTMLElement, handler: (event: MouseEvent) => void) {
+    element.addEventListener("mouseup", handler, true);
+}
+
+/**
+ *
+ */
 export function $MOUSE_MOVE(element: HTMLElement, handler: (event: MouseEvent) => void) {
     element.addEventListener("mousemove", handler, true);
 }
@@ -60,22 +103,51 @@ export function $MOUSE_MOVE(element: HTMLElement, handler: (event: MouseEvent) =
 /**
  *
  */
-export function $KEYDOWN(element: HTMLElement, handler: (event: KeyboardEvent) => void) {
+export function $MOUSE_LEAVE(element: HTMLElement, handler: (event: MouseEvent) => void) {
+    element.addEventListener("mouseleave", handler, true);
+}
+
+/**
+ *
+ */
+export function $KEY_DOWN(element: HTMLElement, handler: (event: KeyboardEvent) => void) {
     element.addEventListener("keydown", handler, false);
 }
 
 /**
  *
  */
-export function $KEYUP(element: HTMLElement, handler: (event: KeyboardEvent) => void) {
+export function $KEY_UP(element: HTMLElement, handler: (event: KeyboardEvent) => void) {
     element.addEventListener("keyup", handler, false);
+}
+
+/**
+ * Executes the handler when ENTER key was pressed.
+ */
+export function $KEY_ENTER(element: HTMLElement, handler: () => void) {
+    element.addEventListener("keydown", (event) => {
+        if (event.key === 'Enter') {
+            handler();
+        }
+    }, true);
+}
+
+/**
+ * Executes the handler when SPACE-BAR key was pressed.
+ */
+export function $KEY_SPACE(element: HTMLElement, handler: () => void) {
+    element.addEventListener("keydown", (event) => {
+        if (event.key === ' ') {
+            handler();
+        }
+    }, true);
 }
 
 /**
  *
  * @param element
  */
-export function $VISIBLE(element: HTMLElement) {
+export function $MAKE_VISIBLE(element: HTMLElement) {
     element.style.visibility = 'visible';
 }
 
@@ -83,7 +155,7 @@ export function $VISIBLE(element: HTMLElement) {
  *
  * @param element
  */
-export function $HIDDEN(element: HTMLElement) {
+export function $MAKE_HIDDEN(element: HTMLElement) {
     element.style.visibility = 'hidden';
 }
 
@@ -135,18 +207,6 @@ export function $APPEND_CHILD_TEXT(element: HTMLElement): Text {
     let elText = document.createTextNode('');
     element.appendChild(elText);
     return elText
-}
-
-export function $POST(data: Object): RequestInit {
-    return {
-        method: 'POST',
-        cache: 'no-cache',
-        credentials: 'omit',
-        headers: {"Content-Type": "application/json"},
-        redirect: "follow",
-        referrer: "no-referrer",
-        body: JSON.stringify(data)
-    }
 }
 
 export function $REPLACE(s: string, t: string, r: string): string {

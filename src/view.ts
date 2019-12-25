@@ -1,4 +1,4 @@
-import {$DELETE_CHILDREN, $DIV, $UUID} from "./utils";
+import {$DELETE_CHILDREN, $NEW_DIV, $UUID} from "./utils";
 
 /**
  * Base class for all views.
@@ -22,12 +22,12 @@ export default class View {
      */
     constructor(viewClassName?: string, bodyClassName?: string) {
         this.viewId = $UUID();
-        this.viewElement = $DIV();
+        this.viewElement = $NEW_DIV();
         this.viewElement.id = this.viewId;
         if (viewClassName) {
             this.viewElement.className = viewClassName;
         }
-        this.viewBody = $DIV();
+        this.viewBody = $NEW_DIV();
         this.viewBody.id = $UUID();
         if (bodyClassName) {
             this.viewBody.className = bodyClassName;
