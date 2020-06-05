@@ -1,6 +1,6 @@
 # simpa
 
-Lightweight library for building Single Page Applications using TypeScript.
+Simple and lightweight library for prototyping Single Page Applications using TypeScript.
 
 ## Build
 
