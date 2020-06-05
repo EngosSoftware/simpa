@@ -1,7 +1,7 @@
 {
   "name": "simpa",
   "version": "0.0.12",
-  "description": "Lightweight library for building Single Page Applications using TypeScript.",
+  "description": "Simple and lightweight library for prototyping Single Page Applications using TypeScript.",
   "main": "lib/main.js",
   "types": "lib/main.d.ts",
   "scripts": {
@@ -10,17 +10,17 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/EngosSoftware/simpa.git"
+    "url": "https://github.com/EngosSoftware/simpa.git"
   },
   "keywords": [
     "simple",
     "library",
-    "building",
+    "prototyping",
     "single",
     "page",
     "applications"
   ],
-  "author": "Dariusz Depta",
+  "author": "Dariusz Depta Engos Software",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/EngosSoftware/simpa/issues"
