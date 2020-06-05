@@ -20,10 +20,10 @@ this content may be interesting also for you.
 
 ```
 $ node -v
-v10.16.3
+v12.16.3
 
 $ npm -v
-6.9.0
+6.14.5
 ```
 
 #### Package initialization
@@ -47,6 +47,14 @@ npm install --save-dev jest
 npm install --save-dev @types/jest 
 npm install --save-dev ts-jest 
 ```
+
+To check outdated packages, run the following command:
+
+```
+$ npm outdated
+```
+
+There should be no output when all packages are fresh.
 
 To use TypeScript there is **tsconfig.json** file required. So I created one. See the file content for details.
 
