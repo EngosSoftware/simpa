@@ -4,27 +4,34 @@ import {assertId} from "./utils.test";
 test('component()', () => {
     let c = new Component("component-class-name");
     expect(c).not.toEqual(null);
-    let componentId = c.getComponentId();
+    let componentId = c.componentId;
     assertId(componentId);
-    let componentElement = c.getComponentElement();
+    let componentElement = c.componentRoot;
     assertId(componentElement.id);
     expect(componentElement.id).toBe(componentId);
-    c.doRender();
-    expect(componentElement.id).toBe(componentId)
+    c.doCreate();
+    expect(componentElement.id).toBe(componentId);
 });
 
 test('component.render()', () => {
 
     class Child extends Component {
-        private childId: string = '';
+        private _childId = '';
+        private _otherId = 'other_id';
 
-        public getChildId(): string {
-            return this.childId;
+        get childId(): string {
+            return this._childId;
+        }
+
+        get otherId(): string {
+            return this._otherId;
         }
     }
 
     let c = new Child("child-class-name");
-    expect(c.getChildId()).toBe('');
-    c.doRender();
-    assertId(c.getChildId())
+    expect(c.childId).toBe('');
+    expect(c.otherId).toBe('other_id');
+    c.doCreate();
+    assertId(c.childId)
+    expect(c.otherId).toBe('other_id');
 });

@@ -1,77 +1,106 @@
 /*
  *
  */
-import {$NEW_DIV, $NEW_ELEMENT, $UUID} from "./utils";
+import {$CREATE_DIV, $CREATE_ELEMENT, $UUID} from "./utils";
 
 /**
  * Base class for all components.
  */
 export class Component {
 
-    /** Unique component identifier. */
-    private readonly componentId: string;
-
-    /** HTML element that is the root container element for this component. */
-    private readonly componentElement: HTMLElement;
+    /**
+     * Unique component identifier, initialized during component construction.
+     */
+    private readonly _componentId: string;
 
     /**
-     * Creates new component.
-     *
-     * @param className Name of the class for this component.
-     * @param htmlElementName Name of the HTML element that is the root container element for this component.
+     * HTML element that is the root element for a component.
      */
-    constructor(className: string, htmlElementName?: string) {
-        this.componentId = $UUID();
-        this.componentElement = htmlElementName ? $NEW_ELEMENT(htmlElementName) : $NEW_DIV();
-        this.componentElement.id = this.componentId;
-        this.componentElement.className = className;
+    private readonly _componentRoot: HTMLElement;
+
+    /**
+     * Creates a new component.
+     *
+     * @param className Name of the class for styling the root element of the component.
+     * @param tagName Name of the HTML tag that is the root element for this component.
+     */
+    constructor(className: string, tagName?: string) {
+        this._componentId = $UUID();
+        this._componentRoot = tagName ? $CREATE_ELEMENT(tagName) : $CREATE_DIV();
+        this._componentRoot.id = this._componentId;
+        this._componentRoot.className = className;
     }
 
     /**
-     * Returns the component identifier. Component identifiers are in form of UUID.
-     * Component identifiers are unique in terms of UUID.
+     * Returns the identifier of the component.
      *
      * @return Component identifier.
      */
-    public getComponentId(): string {
-        return this.componentId;
+    get componentId(): string {
+        return this._componentId;
     }
 
     /**
-     * Returns the HTML root container element for this component.
+     * Returns the HTML root element for this component.
      *
-     * @return Root container element for this component.
+     * @return Root element for this component.
      */
-    public getComponentElement(): HTMLElement {
-        return this.componentElement;
+    get componentRoot(): HTMLElement {
+        return this._componentRoot;
     }
 
+    /**
+     * Creates the content of this component basing on the template.
+     */
+    public doCreate(): void {
+        this.initializeIdentifiers();
+        let template = this.doTemplate();
+        if (template && template.trim() !== '') {
+            this._componentRoot.innerHTML = this.replaceIdentifiersInTemplate(template);
+        }
+    }
+
+    /**
+     * Builds the DOM structure for this component.
+     * Derived classes should build the DOM structure for
+     * the whole content that constitutes the component.
+     *
+     * @return HTML element that is the root of the component.
+     */
+    public doBuild(): void {
+    }
+
+    /**
+     * Initializes the component.
+     * Derived classes may process additional initialization
+     * in this method which is called when the DOM tree is fully constructed.
+     */
     public doInit(): void {
     }
 
-    public doRender(): HTMLElement {
-        this.initializeIdentifiers();
-        let template = this.getTemplate();
-        if (template && template.trim() !== '') {
-            this.componentElement.innerHTML = this.replaceIdentifiersInTemplate(template);
-        }
-        return this.componentElement;
-    }
-
-    public doSetFocus(): void {
-    }
-
-    protected appendChild(child: HTMLElement) {
-        this.componentElement.appendChild(child)
-    }
-
-    public getTemplate(): string {
+    /**
+     * Prepares the HTML template for a component.
+     * Derived classes may override this method
+     * to prepare custom HTML template.
+     *
+     * @return HTML template for a component.
+     */
+    public doTemplate(): string {
         return '';
     }
 
     /**
+     * Utility method for adding child elements to the root element of this component.
+     *
+     * @param child Child HTML element.
+     */
+    protected appendChild(child: HTMLElement) {
+        this._componentRoot.appendChild(child)
+    }
+
+    /**
      * Initializes all properties with names ending with 'Id',
-     * having type string and with value equal to empty string.
+     * having type string and value equal to empty string.
      * Each component property that meets these criteria is
      * initialized with a unique identifier in form of UUID.
      */

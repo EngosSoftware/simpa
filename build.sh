@@ -1,6 +1,6 @@
 #!/bin/bash
 
-rm -rf ~/simpa*.*
+rm -rf ./lib
+npm run test
 npm run build
-npm pack
-mv simpa*.* ~
+npm publish

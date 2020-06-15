@@ -1,6 +1,6 @@
 {
   "name": "simpa",
-  "version": "0.0.14",
+  "version": "0.0.35",
   "description": "Simple and lightweight library for prototyping Single Page Applications using TypeScript.",
   "main": "lib/main.js",
   "types": "lib/main.d.ts",
@@ -20,7 +20,7 @@
     "page",
     "applications"
   ],
-  "author": "Dariusz Depta Engos Software",
+  "author": "Dariusz Depta",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/EngosSoftware/simpa/issues"
@@ -39,6 +39,6 @@
     "uuid-js": "^0.7.5"
   },
   "files": [
-    "lib/**/*"
+    "lib/"
   ]
 }

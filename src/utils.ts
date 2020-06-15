@@ -48,12 +48,12 @@ export function $PRE(elementId: string): HTMLPreElement | null {
 }
 
 /**
- * Creates HTML element with specified name.
+ * Creates HTML element for specified HTML tag name.
  *
  * @return HTML element.
  */
-export function $NEW_ELEMENT(elementName: string): HTMLElement {
-    return document.createElement(elementName);
+export function $CREATE_ELEMENT(tagName: string): HTMLElement {
+    return document.createElement(tagName);
 }
 
 /**
@@ -61,7 +61,7 @@ export function $NEW_ELEMENT(elementName: string): HTMLElement {
  *
  * @return HTML DIV element.
  */
-export function $NEW_DIV(): HTMLDivElement {
+export function $CREATE_DIV(): HTMLDivElement {
     return document.createElement('div');
 }
 

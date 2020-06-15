@@ -13,7 +13,7 @@ Simple and lightweight library for prototyping Single Page Applications using Ty
 
 ## How this library was built step by step
 
-This section is just for me as a memo. But if you plan to build your own library with TypeScript,
+This section is just for me as a memo, but if you plan to build your own library with TypeScript,
 this content may be interesting also for you.
 
 #### Check the latest versions of node and npm

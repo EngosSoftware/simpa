@@ -1,20 +1,23 @@
 {
   "compilerOptions": {
     "moduleResolution": "node",
+    "target": "es5",
+    "module": "es6",
     "outDir": "./lib",
     "declaration": true,
     "strict": true,
     "esModuleInterop": true,
     "sourceMap": true,
     "noImplicitAny": true,
-    "module": "es6",
+    "typeRoots": [
+      "node_modules/@types"
+    ],
     "lib": [
       "es2017",
       "es7",
       "es6",
       "dom"
-    ],
-    "target": "es5"
+    ]
   },
   "include": [
     "src"
