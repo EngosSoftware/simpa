@@ -1,34 +1,51 @@
 /**
  * Base class for all applications.
  */
-import {$ID} from "./utils";
 import {View} from "./view";
+import {Component} from "./component";
+import {$ID} from "./utils";
 
-export class Application {
+export class Application extends Component {
 
     private readonly _appElement: HTMLElement;
     private readonly _views: View[];
 
-    constructor(appId: string, appClassName: string) {
+    constructor(appId: string, className: string) {
+        super(className);
         this._appElement = $ID(appId)!;
-        this._appElement.className = appClassName;
         this._views = [];
     }
 
+    public get views(): View[] {
+        return this._views;
+    }
+
     public doCreate(): void {
+        super.doCreate();
+    }
+
+    public doCreateViews(): void {
         this._views.forEach((view) => {
             view.doCreate();
         });
     }
 
-    public doRender(): void {
+    public doBuild(): void {
+        super.doBuild();
+        this._appElement.appendChild(this.componentRoot);
+    }
+
+    public doBuildViews(): void {
         this._views.forEach((view) => {
-            this._appElement.appendChild(view.componentRoot);
             view.doBuild();
         });
     }
 
     public doInit(): void {
+        super.doInit();
+    }
+
+    public doInitViews(): void {
         this._views.forEach((view) => {
             view.doInit();
         });
@@ -38,7 +55,7 @@ export class Application {
         this._views.push(view);
     }
 
-    public hideAllViews() {
+    public hideViews() {
         this._views.forEach((view) => {
             view.hide();
         })
