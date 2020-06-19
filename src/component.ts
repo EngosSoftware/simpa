@@ -73,7 +73,8 @@ export class Component {
     /**
      * Initializes the component.
      * Derived classes may process additional initialization
-     * in this method which is called when the DOM tree is fully constructed.
+     * in this method which is called when the DOM tree
+     * is already fully constructed.
      */
     public doInit(): void {
     }
@@ -136,21 +137,35 @@ export class Component {
      * @param template Modified HTML template.
      */
     private replaceIdentifiersInTemplate(template: string): string {
-        let m = template;   // m is the modified template text
-        let c = this;       // c is the current component
+        let t = template;
+        const c = this;
         for (const key in c) {
             if (c.hasOwnProperty(key) && key.endsWith('Id')) {
-                const value = (c as any)[key];  // get the value of identifier
-                // replace all instances of id="..."
+                const value = (c as any)[key];
+
+                // Do replaces in NOT minimized HTML
+
+                // replace all instances of id="(value)"
                 const idPattern = RegExp(`id="` + key + `"`, 'g');
                 const idReplacement = `id="` + value + `"`;
-                m = m.replace(idPattern, idReplacement);
-                // replace all instances of for="..."
+                t = t.replace(idPattern, idReplacement);
+                // replace all instances of for="(value)"
                 const forPattern = RegExp(`for="` + key + `"`, 'g');
                 const forReplacement = `for="` + value + `"`;
-                m = m.replace(forPattern, forReplacement);
+                t = t.replace(forPattern, forReplacement);
+
+                // Do replaces in minimized HTML (attribute quotes are removed)
+
+                // replace all instances of id=(value)
+                const idPatternMinimized = RegExp(`id=` + key, 'g');
+                const idReplacementMinimized = `id=` + value;
+                t = t.replace(idPatternMinimized, idReplacementMinimized);
+                // replace all instances of for=(value)
+                const forPatternMinimized = RegExp(`for=` + key, 'g');
+                const forReplacementMinimized = `for=` + value;
+                t = t.replace(forPatternMinimized, forReplacementMinimized);
             }
         }
-        return m;
+        return t;
     }
 }
