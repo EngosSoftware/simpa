@@ -12,7 +12,7 @@ export const gvTouch = ('ontouchstart' in window);
  * @return UUID identifier.
  */
 export function $UUID(): string {
-    return UUID.create().toString()
+    return UUID.create().toString();
 }
 
 /**
@@ -69,63 +69,95 @@ export function $CREATE_DIV(): HTMLDivElement {
  *
  */
 export function $INPUT(element: HTMLElement, handler: () => void) {
-    element.addEventListener("input", handler, true);
+    element.addEventListener('input', handler, true);
 }
 
 /**
  *
  */
 export function $TOUCH(element: HTMLElement, handler: () => void) {
-    element.addEventListener(gvTouch ? "touchend" : "mouseup", handler, true);
+    if (element) {
+        element.addEventListener(gvTouch ? 'touchend' : 'mouseup', handler, true);
+    } else {
+        throwElementNotAssigned('$TOUCH');
+    }
+}
+
+/**
+ *
+ */
+export function $touch(identifier: string, h: () => void) {
+    const element = document.getElementById(identifier);
+    if (element) {
+        element.addEventListener(gvTouch ? 'touchend' : 'mouseup', h, true);
+    } else {
+        throwElementNotAssigned('$touch');
+    }
 }
 
 /**
  *
  */
 export function $MOUSE_DOWN(element: HTMLElement, handler: (event: MouseEvent) => void) {
-    element.addEventListener("mousedown", handler, true);
+    element.addEventListener('mousedown', handler, true);
 }
 
 /**
  *
  */
 export function $MOUSE_UP(element: HTMLElement, handler: (event: MouseEvent) => void) {
-    element.addEventListener("mouseup", handler, true);
+    if (element) {
+        element.addEventListener('mouseup', handler, true);
+    } else {
+        throwElementNotAssigned('$MOUSE_UP');
+    }
+}
+
+/**
+ *
+ */
+export function $mouseUp(identifier: string, h: () => void) {
+    const element = document.getElementById(identifier);
+    if (element) {
+        element.addEventListener('mouseup', h, true);
+    } else {
+        throwElementNotAssigned('$mouseUp');
+    }
 }
 
 /**
  *
  */
 export function $MOUSE_MOVE(element: HTMLElement, handler: (event: MouseEvent) => void) {
-    element.addEventListener("mousemove", handler, true);
+    element.addEventListener('mousemove', handler, true);
 }
 
 /**
  *
  */
 export function $MOUSE_LEAVE(element: HTMLElement, handler: (event: MouseEvent) => void) {
-    element.addEventListener("mouseleave", handler, true);
+    element.addEventListener('mouseleave', handler, true);
 }
 
 /**
  *
  */
 export function $KEY_DOWN(element: HTMLElement, handler: (event: KeyboardEvent) => void) {
-    element.addEventListener("keydown", handler, false);
+    element.addEventListener('keydown', handler, false);
 }
 
 /**
  *
  */
 export function $KEY_UP(element: HTMLElement, handler: (event: KeyboardEvent) => void) {
-    element.addEventListener("keyup", handler, false);
+    element.addEventListener('keyup', handler, false);
 }
 
 /**
  * Executes the handler when ENTER key was pressed.
  */
 export function $KEY_ENTER(element: HTMLElement, handler: () => void) {
-    element.addEventListener("keydown", (event) => {
+    element.addEventListener('keydown', (event) => {
         if (event.key === 'Enter') {
             handler();
         }
@@ -136,7 +168,7 @@ export function $KEY_ENTER(element: HTMLElement, handler: () => void) {
  * Executes the handler when SPACE-BAR key was pressed.
  */
 export function $KEY_SPACE(element: HTMLElement, handler: () => void) {
-    element.addEventListener("keydown", (event) => {
+    element.addEventListener('keydown', (event) => {
         if (event.key === ' ') {
             handler();
         }
@@ -206,13 +238,74 @@ export function $SET_FOCUS(element: HTMLElement) {
 export function $APPEND_CHILD_TEXT(element: HTMLElement): Text {
     let elText = document.createTextNode('');
     element.appendChild(elText);
-    return elText
+    return elText;
 }
 
 export function $REPLACE(s: string, t: string, r: string): string {
-    return s.replace(":" + t, r);
+    return s.replace(':' + t, r);
 }
 
 export function $REPLACE_MD(s: string, t: string, r: string): string {
-    return s.replace(":" + t, marked(r));
+    return s.replace(':' + t, marked(r));
+}
+
+function throwElementNotAssigned(source: string) {
+    console.trace();
+    throw 'simpa error: element not assigned in ' + source;
+}
+
+
+export function $displayFlex(identifier: string) {
+    const element = document.getElementById(identifier);
+    if (element) {
+        element.style.display = 'flex';
+    } else {
+        throwElementNotAssigned('$displayFlex');
+    }
+}
+
+export function $setVisible(identifier: string, visible: boolean) {
+    const element = document.getElementById(identifier);
+    if (element) {
+        element.style.visibility = visible ? 'visible' : 'hidden';
+    } else {
+        throwElementNotAssigned('$setVisible');
+    }
+}
+
+export function $visible(identifier: string) {
+    const element = document.getElementById(identifier);
+    if (element) {
+        element.style.visibility = 'visible';
+    } else {
+        throwElementNotAssigned('$visible');
+    }
+}
+
+export function $hidden(identifier: string) {
+    const element = document.getElementById(identifier);
+    if (element) {
+        element.style.visibility = 'hidden';
+    } else {
+        throwElementNotAssigned('$hidden');
+    }
+}
+
+/**
+ *
+ */
+export function $innerHTML(identifier: string, value: string) {
+    const element = document.getElementById(identifier);
+    if (element) {
+        element.innerHTML = value;
+    } else {
+        console.log('ERROR in $INNER_HTML$: element with not found id=' + identifier);
+    }
+}
+
+/**
+ *
+ */
+export function $md(s: string): string {
+    return marked(s);
 }
