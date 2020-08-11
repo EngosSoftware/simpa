@@ -1,22 +1,61 @@
-import {$ID, $UUID, gvTouch} from "../utils";
+import {
+    $DisplayBlock,
+    $displayBlock,
+    $DisplayFlex,
+    $displayFlex,
+    $DisplayNone,
+    $displayNone,
+    $id,
+    $uuid,
+    gvTouch
+} from '../utils';
 
 test('gvTouch', () => {
     expect(gvTouch).toBe(false);
 });
 
-test('$UUID', () => {
-    assertId($UUID())
+test('$uuid', () => {
+    assertId($uuid());
 });
 
-test('$ID', () => {
+test('$id', () => {
     document.body.innerHTML = '<div id="a763-dk984-kht874-d4krj" class="div-class-name"></div>';
-    let elDiv = $ID("a763-dk984-kht874-d4krj");
-    expect(elDiv).not.toEqual(null);
-    if (elDiv) {
-        expect(elDiv.className).toBe("div-class-name");
+    let element = $id('a763-dk984-kht874-d4krj');
+    expect(element).not.toEqual(null);
+    if (element) {
+        expect(element.className).toBe('div-class-name');
+    }
+});
+
+test('$displayNone/Block/Flex', () => {
+    document.body.innerHTML = '<div id="2d6f1e19-fb61-4432-ab34-6374adf969d6">DISPLAY-NONE</div>';
+    let id = '2d6f1e19-fb61-4432-ab34-6374adf969d6';
+    let element = $id(id);
+    expect(element).not.toEqual(null);
+    if (element) {
+        let value = element.style.display;
+        expect(value).toBe('');
+        $displayBlock(id);
+        value = element.style.display;
+        expect(value).toBe('block');
+        $displayNone(id);
+        value = element.style.display;
+        expect(value).toBe('none');
+        $displayFlex(id);
+        value = element.style.display;
+        expect(value).toBe('flex');
+        $DisplayBlock(element);
+        value = element.style.display;
+        expect(value).toBe('block');
+        $DisplayNone(element);
+        value = element.style.display;
+        expect(value).toBe('none');
+        $DisplayFlex(element);
+        value = element.style.display;
+        expect(value).toBe('flex');
     }
 });
 
 export function assertId(id: string) {
-    expect(id).toMatch(RegExp('^[a-z0-9]{8}(-[a-z0-9]{4}){3}-[a-z0-9]{12}$'))
+    expect(id).toMatch(RegExp('^[a-z0-9]{8}(-[a-z0-9]{4}){3}-[a-z0-9]{12}$'));
 }

@@ -1,7 +1,7 @@
 /*
  *
  */
-import {$CREATE_DIV, $CREATE_ELEMENT, $UUID} from "./utils";
+import {$CREATE_DIV, $CREATE_ELEMENT, $uuid} from "./utils";
 
 /**
  * Base class for all components.
@@ -25,7 +25,7 @@ export class Component {
      * @param tagName Name of the HTML tag that is the root element for this component.
      */
     constructor(className: string, tagName?: string) {
-        this._componentId = $UUID();
+        this._componentId = $uuid();
         this._componentRoot = tagName ? $CREATE_ELEMENT(tagName) : $CREATE_DIV();
         this._componentRoot.id = this._componentId;
         this._componentRoot.className = className;
@@ -111,7 +111,7 @@ export class Component {
             if (c.hasOwnProperty(key) && key.endsWith('Id')) {
                 const value = (c as any)[key];
                 if (value === '' && (typeof value === 'string')) {
-                    (c as any)[key] = $UUID();
+                    (c as any)[key] = $uuid();
                 }
             }
         }

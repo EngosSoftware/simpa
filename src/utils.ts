@@ -11,18 +11,18 @@ export const gvTouch = ('ontouchstart' in window);
  *
  * @return UUID identifier.
  */
-export function $UUID(): string {
+export function $uuid(): string {
     return UUID.create().toString();
 }
 
 /**
  * Returns HTML element with specified identifier.
  *
- * @param elementId Identifier of HTML element in document.
+ * @param id Identifier of HTML element in document.
  * @return HTML element with specified identifier or null.
  */
-export function $ID(elementId: string): HTMLElement | null {
-    return document.getElementById(elementId);
+export function $id(id: string): HTMLElement | null {
+    return document.getElementById(id);
 }
 
 /**
@@ -31,7 +31,7 @@ export function $ID(elementId: string): HTMLElement | null {
  * @param elementId Identifier of HTML DIV element in document.
  * @return HTML DIV element with specified identifier or null.
  */
-export function $DIV(elementId: string): HTMLDivElement | null {
+export function $div(elementId: string): HTMLDivElement | null {
     const element = document.getElementById(elementId);
     return element ? element as HTMLDivElement : null;
 }
@@ -42,7 +42,7 @@ export function $DIV(elementId: string): HTMLDivElement | null {
  * @param elementId Identifier of HTML PRE element in document.
  * @return HTML PRE element with specified identifier or null.
  */
-export function $PRE(elementId: string): HTMLPreElement | null {
+export function $pre(elementId: string): HTMLPreElement | null {
     const element = document.getElementById(elementId);
     return element ? element as HTMLPreElement : null;
 }
@@ -75,23 +75,23 @@ export function $INPUT(element: HTMLElement, handler: () => void) {
 /**
  *
  */
-export function $TOUCH(element: HTMLElement, handler: () => void) {
+export function $touch(id: string, handler: () => void) {
+    const element = document.getElementById(id);
     if (element) {
-        element.addEventListener(gvTouch ? 'touchend' : 'mouseup', handler, true);
+        $Touch(element, handler);
     } else {
-        throwElementNotAssigned('$TOUCH');
+        throwElementNotAssigned('$touch');
     }
 }
 
 /**
  *
  */
-export function $touch(identifier: string, h: () => void) {
-    const element = document.getElementById(identifier);
+export function $Touch(element: HTMLElement, handler: () => void) {
     if (element) {
-        element.addEventListener(gvTouch ? 'touchend' : 'mouseup', h, true);
+        element.addEventListener(gvTouch ? 'touchend' : 'mouseup', handler, true);
     } else {
-        throwElementNotAssigned('$touch');
+        throwElementNotAssigned('$Touch');
     }
 }
 
@@ -192,22 +192,6 @@ export function $MAKE_HIDDEN(element: HTMLElement) {
 }
 
 /**
- *
- * @param element
- */
-export function $SHOW(element: HTMLElement) {
-    element.style.display = 'block';
-}
-
-/**
- *
- * @param element
- */
-export function $HIDE(element: HTMLElement) {
-    element.style.display = 'none';
-}
-
-/**
  * Deletes all child nodes of specifier element.
  *
  * @param element Element whose all child nodes will be deleted.
@@ -249,18 +233,54 @@ export function $REPLACE_MD(s: string, t: string, r: string): string {
     return s.replace(':' + t, marked(r));
 }
 
-function throwElementNotAssigned(source: string) {
-    console.trace();
-    throw 'simpa error: element not assigned in ' + source;
+export function $displayBlock(id: string) {
+    const element = document.getElementById(id);
+    if (element) {
+        element.style.display = 'block';
+    } else {
+        throwElementNotAssigned('$displayBlock');
+    }
 }
 
+export function $DisplayBlock(element: HTMLElement) {
+    if (element) {
+        element.style.display = 'block';
+    } else {
+        throwElementNotAssigned('$DisplayBlock');
+    }
+}
 
-export function $displayFlex(identifier: string) {
-    const element = document.getElementById(identifier);
+export function $displayNone(id: string) {
+    const element = document.getElementById(id);
+    if (element) {
+        element.style.display = 'none';
+    } else {
+        throwElementNotAssigned('$displayNone');
+    }
+}
+
+export function $DisplayNone(element: HTMLElement) {
+    if (element) {
+        element.style.display = 'none';
+    } else {
+        throwElementNotAssigned('$DisplayNone');
+    }
+}
+
+export function $displayFlex(id: string) {
+    const element = document.getElementById(id);
     if (element) {
         element.style.display = 'flex';
     } else {
         throwElementNotAssigned('$displayFlex');
+    }
+}
+
+export function $DisplayFlex(element: HTMLElement) {
+    if (element) {
+        element.style.display = 'flex';
+    } else {
+        throwElementNotAssigned('$DisplayFlex');
     }
 }
 
@@ -273,33 +293,33 @@ export function $setVisible(identifier: string, visible: boolean) {
     }
 }
 
-export function $visible(identifier: string) {
+export function $visibilityVisible(identifier: string) {
     const element = document.getElementById(identifier);
     if (element) {
         element.style.visibility = 'visible';
     } else {
-        throwElementNotAssigned('$visible');
+        throwElementNotAssigned('$visibilityVisible');
     }
 }
 
-export function $hidden(identifier: string) {
+export function $visibilityHidden(identifier: string) {
     const element = document.getElementById(identifier);
     if (element) {
         element.style.visibility = 'hidden';
     } else {
-        throwElementNotAssigned('$hidden');
+        throwElementNotAssigned('$visibilityHidden');
     }
 }
 
 /**
  *
  */
-export function $innerHTML(identifier: string, value: string) {
-    const element = document.getElementById(identifier);
+export function $innerHTML(id: string, value: string) {
+    const element = document.getElementById(id);
     if (element) {
         element.innerHTML = value;
     } else {
-        console.log('ERROR in $INNER_HTML$: element with not found id=' + identifier);
+        throwElementNotAssigned('$innerHTML');
     }
 }
 
@@ -308,4 +328,14 @@ export function $innerHTML(identifier: string, value: string) {
  */
 export function $md(s: string): string {
     return marked(s);
+}
+
+/**
+ * Throws exception with console stack trace.
+ *
+ * @param source Name of the source of the exception.
+ */
+function throwElementNotAssigned(source: string) {
+    console.trace();
+    throw '[simpa]: element not assigned in ' + source;
 }

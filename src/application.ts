@@ -3,7 +3,7 @@
  */
 import {View} from "./view";
 import {Component} from "./component";
-import {$ID} from "./utils";
+import {$id} from "./utils";
 
 export class Application extends Component {
 
@@ -12,7 +12,7 @@ export class Application extends Component {
 
     constructor(appId: string, className: string) {
         super(className);
-        this._appElement = $ID(appId)!;
+        this._appElement = $id(appId)!;
         this._views = [];
     }
 
