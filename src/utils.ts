@@ -314,12 +314,52 @@ export function $visibilityHidden(identifier: string) {
 /**
  *
  */
-export function $innerHTML(id: string, value: string) {
+export function $innerHTML(id: string, html: string) {
     const element = document.getElementById(id);
     if (element) {
-        element.innerHTML = value;
+        element.innerHTML = html;
     } else {
         throwElementNotAssigned('$innerHTML');
+    }
+}
+
+/**
+ *
+ */
+export function $InnerHTML(element: HTMLElement, html: string) {
+    if (element) {
+        element.innerHTML = html;
+    } else {
+        throwElementNotAssigned('$InnerHTML');
+    }
+}
+
+/**
+ * Sets the inner text of the element with specified identifier.
+ *
+ * @param id Identifier of the element for which the inner text will be set.
+ * @param text Text to be set as inner value of the element.
+ */
+export function $innerText(id: string, text: string): void {
+    const element = document.getElementById(id);
+    if (element) {
+        element.innerText = text;
+    } else {
+        throwElementNotAssigned('$innerText');
+    }
+}
+
+/**
+ * Sets the inner text of the specified element.
+ *
+ * @param element HTML element for which the inner text will be set.
+ * @param text Text to be set as inner value of the element.
+ */
+export function $InnerText(element: HTMLElement, text: string): void {
+    if (element) {
+        element.innerText = text;
+    } else {
+        throwElementNotAssigned('$InnerText');
     }
 }
 
