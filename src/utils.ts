@@ -531,6 +531,23 @@ export function $md(s: string): string {
     return marked(s);
 }
 
+export function $parseInt(s: string | null | undefined, def: number): number {
+    if (s) {
+        const num = parseInt(s);
+        return isNaN(num) ? def : num;
+    }
+    return def;
+}
+
+/**
+ *
+ * @param uri
+ * @param init
+ */
+export async function $fetch(uri: string, init: RequestInit): Promise<Response> {
+    return await fetch(encodeURI(uri), init);
+}
+
 /**
  * Throws exception with console stack trace.
  *

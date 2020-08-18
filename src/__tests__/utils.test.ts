@@ -28,7 +28,7 @@ import {
     $displayFlex,
     $DisplayNone,
     $displayNone,
-    $id,
+    $id, $parseInt,
     $uuid,
     gvTouch
 } from '../utils';
@@ -77,6 +77,19 @@ test('$displayNone/Block/Flex', () => {
         value = element.style.display;
         expect(value).toBe('flex');
     }
+});
+
+test('$parseInt', () => {
+    let n = $parseInt('10', 1);
+    expect(n).toEqual(10);
+    n = $parseInt('-34', 0);
+    expect(n).toEqual(-34);
+    n = $parseInt('', -2);
+    expect(n).toEqual(-2);
+    n = $parseInt(null, 23);
+    expect(n).toEqual(23);
+    n = $parseInt(undefined, 1);
+    expect(n).toEqual(1);
 });
 
 export function assertId(id: string) {
