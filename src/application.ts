@@ -30,9 +30,6 @@ import {$id, $uuid} from './utils';
  */
 export class Application extends Component {
 
-    /** Application's buildNumber number. */
-    private readonly _buildNumber: number;
-
     /** Key name of the entry in sessionStorage where the reloading flag is stored. */
     private readonly _reloadKey: string;
 
@@ -49,21 +46,11 @@ export class Application extends Component {
      * @param appContainerId Identifier of the HTML element that serves as a container for the whole application.
      * @param className Class name for the application element.
      */
-    constructor(build: number, appContainerId: string, className: string) {
+    constructor(appContainerId: string, className: string) {
         super(className);
-        this._buildNumber = build;
         this._reloadKey = 'RELOADED_' + $uuid();
         this._appContainer = $id(appContainerId)!;
         this._views = [];
-    }
-
-    /**
-     * Returns the application's buildNumber number.
-     *
-     * @return Application's buildNumber number.
-     */
-    public get buildNumber(): number {
-        return this._buildNumber;
     }
 
     /**
