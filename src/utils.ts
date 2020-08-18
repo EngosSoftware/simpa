@@ -1,95 +1,147 @@
+/* MIT License
+ *
+ * Copyright (c) 2016-2020 Dariusz Depta Engos Software
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 const UUID = require('uuid-js');
 const marked = require('marked');
 
 /**
- * Global flag indicating if touch screen is enabled.
+ * Global flag indicating if the touch functionality is enabled.
  */
 export const gvTouch = ('ontouchstart' in window);
 
 /**
- * Generates UUID identifier.
+ * Global type for UUID identifiers.
+ */
+type identifier = string;
+
+/**
+ * Generates unique identifier.
  *
- * @return UUID identifier.
+ * @return Unique an identifier in form of UUID.
  */
 export function $uuid(): string {
     return UUID.create().toString();
 }
 
 /**
- * Returns HTML element with specified identifier.
+ * Returns an HTML element with specified identifier.
  *
- * @param id Identifier of HTML element in document.
- * @return HTML element with specified identifier or null.
+ * @param id Identifier of the HTML element in document.
+ * @return HTML element with specified identifier or null when not found in DOM.
  */
-export function $id(id: string): HTMLElement | null {
+export function $id(id: identifier): HTMLElement | null {
     return document.getElementById(id);
 }
 
 /**
- * Returns HTML DIV element with specified identifier.
+ * Returns HTML element with specified identifier and casts to HTMLDivElement.
+ * This function is an equivalent of calling:
+ * <pre>
+ *     document.getElementById(id) as HTMLDivElement
+ * </pre>
  *
- * @param elementId Identifier of HTML DIV element in document.
+ * @param id Identifier of HTML DIV element in document.
  * @return HTML DIV element with specified identifier or null.
  */
-export function $div(elementId: string): HTMLDivElement | null {
-    const element = document.getElementById(elementId);
-    return element ? element as HTMLDivElement : null;
+export function $htmlDiv(id: identifier): HTMLDivElement | null {
+    const e = $id(id);
+    return e ? e as HTMLDivElement : null;
 }
 
 /**
- * Returns HTML PRE element with specified identifier.
+ * Returns HTML element with specified identifier and casts to HTMLPreElement.
+ * This function is an equivalent of calling:
+ * <pre>
+ *     document.getElementById(id) as HTMLPreElement
+ * </pre>
  *
- * @param elementId Identifier of HTML PRE element in document.
+ * @param id Identifier of HTML PRE element in document.
  * @return HTML PRE element with specified identifier or null.
  */
-export function $pre(elementId: string): HTMLPreElement | null {
-    const element = document.getElementById(elementId);
-    return element ? element as HTMLPreElement : null;
+export function $htmlPre(id: identifier): HTMLPreElement | null {
+    const e = $id(id);
+    return e ? e as HTMLPreElement : null;
 }
 
 /**
- * Creates HTML element for specified HTML tag name.
+ * Returns HTML element with specified identifier and casts to HTMLImageElement.
+ * This function is an equivalent of calling:
+ * <pre>
+ *     document.getElementById(id) as HTMLImageElement
+ * </pre>
  *
- * @return HTML element.
+ * @param id Identifier of HTML IMG element in document.
+ * @return HTML IMG element with specified identifier or null.
  */
-export function $CREATE_ELEMENT(tagName: string): HTMLElement {
-    return document.createElement(tagName);
+export function $htmlImage(id: identifier): HTMLImageElement | null {
+    const e = $id(id);
+    return e ? e as HTMLImageElement : null;
+}
+
+/**
+ * Creates HTML element from specified HTML tag name.
+ *
+ * @return Newly created HTML element.
+ */
+export function $createElement(tag: string): HTMLElement {
+    return document.createElement(tag);
 }
 
 /**
  * Creates HTML DIV element.
  *
- * @return HTML DIV element.
+ * @return Newly created HTML DIV element.
  */
-export function $CREATE_DIV(): HTMLDivElement {
+export function $createDiv(): HTMLDivElement {
     return document.createElement('div');
 }
 
 /**
+ * Registers a 'touch' event for the element with specified identifier.
+ * This function always registers an 'mouseup' event handler,
+ * and for touch screens additionally registers an 'touchend' event handler.
  *
+ * @param id Identifier of the element for which the event handler will be registered.
+ * @param h Event handler to be registered for the element with specified identifier.
  */
-export function $INPUT(element: HTMLElement, handler: () => void) {
-    element.addEventListener('input', handler, true);
+export function $touch(id: identifier, h: () => void): void {
+    $Touch($id(id), h);
 }
 
 /**
+ * Registers a 'touch' event for the specified element.
+ * This function always registers an 'mouseup' event handler,
+ * and for touch screens additionally registers an 'touchend' event handler.
  *
+ * @param e Element for which the event handler will be registered.
+ * @param h Event handler to be registered for the specified element.
  */
-export function $touch(id: string, handler: () => void) {
-    const element = document.getElementById(id);
-    if (element) {
-        $Touch(element, handler);
-    } else {
-        throwElementNotAssigned('$touch');
-    }
-}
-
-/**
- *
- */
-export function $Touch(element: HTMLElement, handler: () => void) {
-    if (element) {
-        element.addEventListener(gvTouch ? 'touchend' : 'mouseup', handler, true);
+export function $Touch(e: HTMLElement | null, h: () => void): void {
+    if (e) {
+        if (gvTouch) {
+            e.addEventListener('touchend', h);
+        }
+        e.addEventListener('mouseup', h);
     } else {
         throwElementNotAssigned('$Touch');
     }
@@ -98,109 +150,196 @@ export function $Touch(element: HTMLElement, handler: () => void) {
 /**
  *
  */
-export function $MOUSE_DOWN(element: HTMLElement, handler: (event: MouseEvent) => void) {
-    element.addEventListener('mousedown', handler, true);
+export function $handleInput(id: identifier, h: () => void): void {
+    $HandleInput($id(id), h);
 }
 
 /**
  *
  */
-export function $MOUSE_UP(element: HTMLElement, handler: (event: MouseEvent) => void) {
-    if (element) {
-        element.addEventListener('mouseup', handler, true);
+export function $HandleInput(e: HTMLElement | null, h: () => void): void {
+    if (e) {
+        e.addEventListener('input', h);
     } else {
-        throwElementNotAssigned('$MOUSE_UP');
+        throwElementNotAssigned('$HandleInput');
     }
 }
 
 /**
  *
  */
-export function $mouseUp(identifier: string, h: () => void) {
-    const element = document.getElementById(identifier);
-    if (element) {
-        element.addEventListener('mouseup', h, true);
+export function $handleMouseDown(id: identifier, h: (me: MouseEvent) => void): void {
+    $HandleMouseDown($id(id), h);
+}
+
+/**
+ *
+ */
+export function $HandleMouseDown(e: HTMLElement | null, h: (me: MouseEvent) => void): void {
+    if (e) {
+        e.addEventListener('mousedown', h);
     } else {
-        throwElementNotAssigned('$mouseUp');
+        throwElementNotAssigned('$HandleMouseDown');
     }
 }
 
 /**
  *
  */
-export function $MOUSE_MOVE(element: HTMLElement, handler: (event: MouseEvent) => void) {
-    element.addEventListener('mousemove', handler, true);
+export function $handleMouseUp(id: identifier, h: () => void): void {
+    $HandleMouseUp($id(id), h);
 }
 
 /**
  *
  */
-export function $MOUSE_LEAVE(element: HTMLElement, handler: (event: MouseEvent) => void) {
-    element.addEventListener('mouseleave', handler, true);
+export function $HandleMouseUp(e: HTMLElement | null, h: (me: MouseEvent) => void): void {
+    if (e) {
+        e.addEventListener('mouseup', h);
+    } else {
+        throwElementNotAssigned('$HandleMouseUp');
+    }
 }
 
 /**
  *
  */
-export function $KEY_DOWN(element: HTMLElement, handler: (event: KeyboardEvent) => void) {
-    element.addEventListener('keydown', handler, false);
+export function $handleMouseMove(id: identifier, h: (me: MouseEvent) => void): void {
+    $HandleMouseMove($id(id), h);
 }
 
 /**
  *
  */
-export function $KEY_UP(element: HTMLElement, handler: (event: KeyboardEvent) => void) {
-    element.addEventListener('keyup', handler, false);
-}
-
-/**
- * Executes the handler when ENTER key was pressed.
- */
-export function $KEY_ENTER(element: HTMLElement, handler: () => void) {
-    element.addEventListener('keydown', (event) => {
-        if (event.key === 'Enter') {
-            handler();
-        }
-    }, true);
-}
-
-/**
- * Executes the handler when SPACE-BAR key was pressed.
- */
-export function $KEY_SPACE(element: HTMLElement, handler: () => void) {
-    element.addEventListener('keydown', (event) => {
-        if (event.key === ' ') {
-            handler();
-        }
-    }, true);
+export function $HandleMouseMove(e: HTMLElement | null, h: (me: MouseEvent) => void): void {
+    if (e) {
+        e.addEventListener('mousemove', h);
+    } else {
+        throwElementNotAssigned('$HandleMouseMove');
+    }
 }
 
 /**
  *
- * @param element
  */
-export function $MAKE_VISIBLE(element: HTMLElement) {
-    element.style.visibility = 'visible';
+export function $handleMouseLeave(id: identifier, h: (me: MouseEvent) => void): void {
+    $HandleMouseLeave($id(id), h);
 }
 
 /**
  *
- * @param element
  */
-export function $MAKE_HIDDEN(element: HTMLElement) {
-    element.style.visibility = 'hidden';
+export function $HandleMouseLeave(e: HTMLElement | null, h: (me: MouseEvent) => void): void {
+    if (e) {
+        e.addEventListener('mouseleave', h);
+    } else {
+        throwElementNotAssigned('$HandleMouseLeave');
+    }
+}
+
+/**
+ *
+ */
+export function $handleKeyDown(id: identifier, h: (ke: KeyboardEvent) => void): void {
+    $HandleKeyDown($id(id), h);
+}
+
+/**
+ *
+ */
+export function $HandleKeyDown(e: HTMLElement | null, h: (ke: KeyboardEvent) => void): void {
+    if (e) {
+        e.addEventListener('keydown', h);
+    } else {
+        throwElementNotAssigned('$HandleKeyDown');
+    }
+}
+
+/**
+ *
+ */
+export function $handleKeyUp(id: identifier, h: (event: KeyboardEvent) => void): void {
+    $HandleKeyUp($id(id), h);
+}
+
+/**
+ *
+ */
+export function $HandleKeyUp(e: HTMLElement | null, h: (ke: KeyboardEvent) => void): void {
+    if (e) {
+        e.addEventListener('keyup', h);
+    } else {
+        throwElementNotAssigned('$HandleKeyUp');
+    }
+}
+
+/**
+ * Executes the handler when the ENTER key was pressed.
+ */
+export function $handleKeyEnter(id: identifier, h: () => void): void {
+    $HandleKeyEnter($id(id), h);
+}
+
+/**
+ * Executes the handler when the ENTER key was pressed.
+ */
+export function $HandleKeyEnter(e: HTMLElement | null, h: () => void): void {
+    if (e) {
+        e.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                h();
+            }
+        });
+    } else {
+        throwElementNotAssigned('$HandleKeyEnter');
+    }
+}
+
+/**
+ * Executes the handler when the SPACE key was pressed.
+ */
+export function $handleKeySpace(id: identifier, h: () => void): void {
+    $HandleKeySpace($id(id), h);
+}
+
+/**
+ * Executes the handler when the SPACE key was pressed.
+ */
+export function $HandleKeySpace(e: HTMLElement | null, h: () => void): void {
+    if (e) {
+        e.addEventListener('keydown', (event) => {
+            if (event.key === ' ') {
+                h();
+            }
+        });
+    } else {
+        throwElementNotAssigned('$HandleKeySpace');
+    }
 }
 
 /**
  * Deletes all child nodes of specifier element.
  *
- * @param element Element whose all child nodes will be deleted.
+ * @param id Identifier of the element whose all child nodes will be deleted.
  */
-export function $DELETE_CHILDREN(element: HTMLElement) {
-    let child = element.firstChild;
-    while (child) {
-        element.removeChild(child);
-        child = element.firstChild;
+export function $deleteChildren(id: identifier): void {
+    $DeleteChildren($id(id));
+}
+
+/**
+ * Deletes all child nodes of specifier element.
+ *
+ * @param e Element whose all child nodes will be deleted.
+ */
+export function $DeleteChildren(e: HTMLElement | null): void {
+    if (e) {
+        let child = e.firstChild;
+        while (child) {
+            e.removeChild(child);
+            child = e.firstChild;
+        }
+    } else {
+        throwElementNotAssigned('$DeleteChildren');
     }
 }
 
@@ -209,11 +348,11 @@ export function $DELETE_CHILDREN(element: HTMLElement) {
  * @param element
  * @param value
  */
-export function $SET_TEXT(element: Text, value: string) {
+export function $SET_TEXT(element: Text, value: string): void {
     element.data = value;
 }
 
-export function $SET_FOCUS(element: HTMLElement) {
+export function $SET_FOCUS(element: HTMLElement): void {
     setTimeout(() => {
         element.focus();
     }, 50);
@@ -233,102 +372,88 @@ export function $REPLACE_MD(s: string, t: string, r: string): string {
     return s.replace(':' + t, marked(r));
 }
 
-export function $displayBlock(id: string) {
-    const element = document.getElementById(id);
-    if (element) {
-        element.style.display = 'block';
-    } else {
-        throwElementNotAssigned('$displayBlock');
-    }
+export function $displayBlock(id: identifier): void {
+    $DisplayBlock($id(id));
 }
 
-export function $DisplayBlock(element: HTMLElement) {
-    if (element) {
-        element.style.display = 'block';
+export function $DisplayBlock(e: HTMLElement | null): void {
+    if (e) {
+        e.style.display = 'block';
     } else {
         throwElementNotAssigned('$DisplayBlock');
     }
 }
 
-export function $displayNone(id: string) {
-    const element = document.getElementById(id);
-    if (element) {
-        element.style.display = 'none';
-    } else {
-        throwElementNotAssigned('$displayNone');
-    }
+export function $displayNone(id: identifier): void {
+    $DisplayNone($id(id));
 }
 
-export function $DisplayNone(element: HTMLElement) {
-    if (element) {
-        element.style.display = 'none';
+export function $DisplayNone(e: HTMLElement | null): void {
+    if (e) {
+        e.style.display = 'none';
     } else {
         throwElementNotAssigned('$DisplayNone');
     }
 }
 
-export function $displayFlex(id: string) {
-    const element = document.getElementById(id);
-    if (element) {
-        element.style.display = 'flex';
-    } else {
-        throwElementNotAssigned('$displayFlex');
-    }
+export function $displayFlex(id: identifier): void {
+    $DisplayFlex($id(id));
 }
 
-export function $DisplayFlex(element: HTMLElement) {
-    if (element) {
-        element.style.display = 'flex';
+export function $DisplayFlex(e: HTMLElement | null): void {
+    if (e) {
+        e.style.display = 'flex';
     } else {
         throwElementNotAssigned('$DisplayFlex');
     }
 }
 
-export function $setVisible(identifier: string, visible: boolean) {
-    const element = document.getElementById(identifier);
-    if (element) {
-        element.style.visibility = visible ? 'visible' : 'hidden';
+export function $makeVisible(id: identifier, visible: boolean): void {
+    const e = $id(id);
+    if (e) {
+        e.style.visibility = visible ? 'visible' : 'hidden';
     } else {
-        throwElementNotAssigned('$setVisible');
+        throwElementNotAssigned('$makeVisible');
     }
 }
 
-export function $visibilityVisible(identifier: string) {
-    const element = document.getElementById(identifier);
-    if (element) {
-        element.style.visibility = 'visible';
+export function $visible(id: identifier): void {
+    $Visible($id(id));
+}
+
+export function $Visible(e: HTMLElement | null): void {
+    if (e) {
+        e.style.visibility = 'visible';
     } else {
-        throwElementNotAssigned('$visibilityVisible');
+        throwElementNotAssigned('$visible');
     }
 }
 
-export function $visibilityHidden(identifier: string) {
-    const element = document.getElementById(identifier);
-    if (element) {
-        element.style.visibility = 'hidden';
-    } else {
-        throwElementNotAssigned('$visibilityHidden');
-    }
+export function $hidden(id: identifier): void {
+    $Hidden($id(id));
 }
 
-/**
- *
- */
-export function $innerHTML(id: string, html: string) {
-    const element = document.getElementById(id);
-    if (element) {
-        element.innerHTML = html;
+export function $Hidden(e: HTMLElement | null): void {
+    if (e) {
+        e.style.visibility = 'hidden';
     } else {
-        throwElementNotAssigned('$innerHTML');
+        throwElementNotAssigned('$hidden');
     }
 }
 
 /**
  *
  */
-export function $InnerHTML(element: HTMLElement, html: string) {
-    if (element) {
-        element.innerHTML = html;
+export function $innerHTML(id: identifier, html: string): void {
+    $InnerHTML($id(id), html);
+}
+
+/**
+ *
+ */
+export function $InnerHTML(e: HTMLElement | null, html: string): void {
+    if (e) {
+        e.innerHTML = html;
     } else {
         throwElementNotAssigned('$InnerHTML');
     }
@@ -340,10 +465,10 @@ export function $InnerHTML(element: HTMLElement, html: string) {
  * @param id Identifier of the element for which the inner text will be set.
  * @param text Text to be set as inner value of the element.
  */
-export function $innerText(id: string, text: string): void {
-    const element = document.getElementById(id);
-    if (element) {
-        element.innerText = text;
+export function $innerText(id: identifier, text: string): void {
+    const e = document.getElementById(id);
+    if (e) {
+        e.innerText = text;
     } else {
         throwElementNotAssigned('$innerText');
     }
@@ -352,14 +477,50 @@ export function $innerText(id: string, text: string): void {
 /**
  * Sets the inner text of the specified element.
  *
- * @param element HTML element for which the inner text will be set.
+ * @param e HTML element for which the inner text will be set.
  * @param text Text to be set as inner value of the element.
  */
-export function $InnerText(element: HTMLElement, text: string): void {
-    if (element) {
-        element.innerText = text;
+export function $InnerText(e: HTMLElement | null, text: string): void {
+    if (e) {
+        e.innerText = text;
     } else {
         throwElementNotAssigned('$InnerText');
+    }
+}
+
+/**
+ * Adds a class name to the list of classes of the element with specified identifier.
+ *
+ * @param id Identifier of the element.
+ * @param className Name of the class to be added.
+ */
+export function $addClassName(id: identifier, className: string): void {
+    $AddClassName($id(id), className);
+}
+
+/**
+ * Adds a class name to the list of classes of the specified element.
+ *
+ * @param e Element to which the class name will be added.
+ * @param className Name of the class to be added.
+ */
+export function $AddClassName(e: HTMLElement | null, className: string): void {
+    if (e) {
+        e.classList.add(className);
+    } else {
+        throwElementNotAssigned('$AddClassName');
+    }
+}
+
+export function $removeClassName(id: identifier, className: string): void {
+    $RemoveClassName($id(id), className);
+}
+
+export function $RemoveClassName(e: HTMLElement | null, className: string): void {
+    if (e) {
+        e.classList.remove(className);
+    } else {
+        throwElementNotAssigned('$RemoveClassName');
     }
 }
 
@@ -375,7 +536,7 @@ export function $md(s: string): string {
  *
  * @param source Name of the source of the exception.
  */
-function throwElementNotAssigned(source: string) {
+function throwElementNotAssigned(source: string): void {
     console.trace();
     throw '[simpa]: element not assigned in ' + source;
 }
