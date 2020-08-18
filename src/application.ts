@@ -160,7 +160,9 @@ export class Application extends Component {
                     const newBuildNumber = $parseInt(response, 0);
                     if (newBuildNumber > this.buildNumber) {
                         sessionStorage.setItem(this._reloadKey, RELOADED);
-                        location.reload();
+                        setTimeout(() => {
+                            window.location.reload();
+                        });
                     }
                 }).catch(_ => {
                     // ignore errors
