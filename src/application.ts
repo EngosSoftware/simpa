@@ -23,45 +23,63 @@
 
 import {View} from './view';
 import {Component} from './component';
-import {$fetch, $id, $parseInt} from './utils';
+import {$fetch, $id, $parseInt, $uuid} from './utils';
 
 /**
  * Base class for Single Page Application.
  */
 export class Application extends Component {
 
-    /** Unique application name. */
-    private readonly _appName: string;
-
     /** Application's build number. */
-    private readonly _appBuildNumber: number;
+    private readonly _build: number;
 
     /** Key name of the entry in sessionStorage where the reloading flag is stored. */
     private readonly _reloadKey: string;
 
     /** HTML element that is a container for the whole application. */
-    private readonly _appElement: HTMLElement;
+    private readonly _appContainer: HTMLElement;
 
     /** Collection of all views defined in application. */
     private readonly _views: View[];
 
-    constructor(appName: string, buildNumber: number, appElementId: string, className: string) {
+    /**
+     * Creates a new application's object.
+     *
+     * @param build Application's build number.
+     * @param appContainerId Identifier of the HTML element that serves as a container for the whole application.
+     * @param className Class name for the application element.
+     */
+    constructor(build: number, appContainerId: string, className: string) {
         super(className);
-        this._appName = appName ? appName : 'simpa_app';
-        this._appBuildNumber = buildNumber;
-        this._reloadKey = (this._appName + '_reloaded').toUpperCase();
-        this._appElement = $id(appElementId)!;
+        this._build = build;
+        this._reloadKey = 'RELOADED_' + $uuid();
+        this._appContainer = $id(appContainerId)!;
         this._views = [];
     }
 
-    public get appName(): string {
-        return this._appName;
+    /**
+     * Returns the application's build number.
+     *
+     * @return Application's build number.
+     */
+    public get build(): number {
+        return this._build;
     }
 
-    public get appBuildNumber(): number {
-        return this._appBuildNumber;
+    /**
+     * Returns the HTML element that serves as a container for the whole application.
+     *
+     * @return Application's HTML element being a container for the whole application.
+     */
+    public get appContainer(): HTMLElement {
+        return this._appContainer;
     }
 
+    /**
+     * Returns a collection of all views defined for the application.
+     *
+     * @return Collection of views.
+     */
     public get views(): View[] {
         return this._views;
     }
@@ -78,11 +96,11 @@ export class Application extends Component {
 
     public doBuild(): void {
         super.doBuild();
-        this._appElement.appendChild(this.componentRoot);
+        this.appContainer.appendChild(this.componentRoot);
     }
 
     public doBuildViews(): void {
-        this._views.forEach((view) => {
+        this.views.forEach((view) => {
             view.doBuild();
         });
     }
@@ -92,17 +110,17 @@ export class Application extends Component {
     }
 
     public doInitViews(): void {
-        this._views.forEach((view) => {
+        this.views.forEach((view) => {
             view.doInit();
         });
     }
 
     public addView(view: View) {
-        this._views.push(view);
+        this.views.push(view);
     }
 
     public hideViews() {
-        this._views.forEach((view) => {
+        this.views.forEach((view) => {
             view.hide();
         });
     }
@@ -140,7 +158,7 @@ export class Application extends Component {
                     }
                 }).then(response => {
                     const newBuildNumber = $parseInt(response, 0);
-                    if (newBuildNumber > this.appBuildNumber) {
+                    if (newBuildNumber > this.build) {
                         sessionStorage.setItem(this._reloadKey, RELOADED);
                         location.reload();
                     }
