@@ -23,7 +23,7 @@
 
 import {View} from './view';
 import {Component} from './component';
-import {$fetch, $id, $parseInt, $uuid} from './utils';
+import {$id, $uuid} from './utils';
 
 /**
  * Base class for Single Page Application.
@@ -126,50 +126,9 @@ export class Application extends Component {
     }
 
     /**
-     * Starts the application. Reloads the whole application when there is a newer version available.
-     * Compared applications' versions are integer numbers. Actual application's version (buildNumber number)
-     * is passed to the application's constructor. If there is a newer version available,
-     * the endpoint pointed by <em>getBuildNumberURL</em> returns a number (as a string)
-     * that is greater than the current application's version.
-     * When application is restarted in the browser, the new version number is fetched
-     * and compared with current application's version. If the application version is older
-     * then application is fully reloaded. This process is repeated only once for each restart,
-     * to prevent an infinite reloading loop when the fetched buildNumber number is less than
-     * the application's buildNumber number.
+     * Starts the application.
      */
     public start() {
-        const RELOADED = 'YES';
-        const uri = this.getBuildNumberURL();
-        const me = this;
-        if (uri) {
-            const reloaded = sessionStorage.getItem(this._reloadKey);
-            if (reloaded !== RELOADED) {
-                $fetch(encodeURI(uri), {
-                    method: 'POST',
-                    cache: 'no-cache',
-                    credentials: 'omit',
-                    redirect: 'follow',
-                    referrer: 'no-referrer',
-                    body: null,
-                }).then(response => {
-                    if (response.ok) {
-                        return response.text();
-                    } else {
-                        return Promise.reject(response);
-                    }
-                }).then(response => {
-                    const newBuildNumber = $parseInt(response, 0);
-                    if (newBuildNumber > this.buildNumber) {
-                        sessionStorage.setItem(this._reloadKey, RELOADED);
-                        me.reload();
-                    }
-                }).catch(_ => {
-                    // ignore errors
-                });
-            } else {
-                sessionStorage.removeItem(this._reloadKey);
-            }
-        }
         this.doCreate();
         this.doBuild();
         this.doInit();
@@ -182,16 +141,5 @@ export class Application extends Component {
         setTimeout(() => {
             window.location.reload();
         }, 10);
-    }
-
-    /**
-     * Returns an URL of the backend service that returns applications buildNumber number.
-     * Build numbers are used to automatically reload application when new version is deployed
-     * on the server. Single Page Applications are cached by browsers and to be sure that
-     * the last available version is loaded, the buildNumber number is retrieved from the backend service.
-     * When there is no back-end service available then <em>null</em> value should be returned.
-     */
-    protected getBuildNumberURL(): string | null {
-        return null;
     }
 }

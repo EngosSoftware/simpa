@@ -1,6 +1,6 @@
 {
   "name": "simpa",
-  "version": "0.0.64",
+  "version": "0.0.65",
   "description": "Simple and lightweight library for prototyping Single Page Applications using TypeScript.",
   "main": "lib/main.js",
   "types": "lib/main.d.ts",
