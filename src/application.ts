@@ -140,6 +140,7 @@ export class Application extends Component {
     public start() {
         const RELOADED = 'YES';
         const uri = this.getBuildNumberURL();
+        const me = this;
         if (uri) {
             const reloaded = sessionStorage.getItem(this._reloadKey);
             if (reloaded !== RELOADED) {
@@ -160,9 +161,7 @@ export class Application extends Component {
                     const newBuildNumber = $parseInt(response, 0);
                     if (newBuildNumber > this.buildNumber) {
                         sessionStorage.setItem(this._reloadKey, RELOADED);
-                        setTimeout(() => {
-                            window.location.reload();
-                        });
+                        me.reload();
                     }
                 }).catch(_ => {
                     // ignore errors
@@ -174,6 +173,15 @@ export class Application extends Component {
         this.doCreate();
         this.doBuild();
         this.doInit();
+    }
+
+    /**
+     * Reloads the application.
+     */
+    public reload(): void {
+        setTimeout(() => {
+            window.location.reload();
+        }, 10);
     }
 
     /**
