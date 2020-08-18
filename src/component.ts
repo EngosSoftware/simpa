@@ -82,7 +82,7 @@ export class Component {
 
     /**
      * Builds the DOM structure for this component.
-     * Derived classes should build the DOM structure for
+     * Derived classes should buildNumber the DOM structure for
      * the whole content that constitutes the component.
      *
      * @return HTML element that is the root of the component.
