@@ -44,7 +44,13 @@ export function $uuid(): string {
 }
 
 /**
- * Returns an HTML element with specified identifier.
+ * Returns an HTML element with specified identifier or <em>mull</em>
+ * when such element was not found in the document.
+ *
+ * This function is a shorter version of calling:
+ * <pre>
+ *     document.getElementById(id) as HTMLElement
+ * </pre>
  *
  * @param id Identifier of the HTML element in document.
  * @return HTML element with specified identifier or null when not found in DOM.
@@ -54,8 +60,9 @@ export function $id(id: identifier): HTMLElement | null {
 }
 
 /**
- * Returns HTML element with specified identifier and casts to HTMLDivElement.
- * This function is an equivalent of calling:
+ * Returns an HTML element with specified identifier casted to HTMLDivElement.
+ *
+ * This function is a shorter version of calling:
  * <pre>
  *     document.getElementById(id) as HTMLDivElement
  * </pre>
@@ -65,7 +72,7 @@ export function $id(id: identifier): HTMLElement | null {
  */
 export function $htmlDiv(id: identifier): HTMLDivElement | null {
     const e = $id(id);
-    return e ? e as HTMLDivElement : null;
+    return e ? (e as HTMLDivElement) : null;
 }
 
 /**
