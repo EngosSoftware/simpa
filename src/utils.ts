@@ -140,8 +140,9 @@ export function $Touch(e: HTMLElement | null, h: () => void): void {
     if (e) {
         if (gvTouch) {
             e.addEventListener('touchend', h);
+        } else {
+            e.addEventListener('mouseup', h);
         }
-        e.addEventListener('mouseup', h);
     } else {
         throwElementNotAssigned('$Touch');
     }
@@ -318,6 +319,21 @@ export function $HandleKeySpace(e: HTMLElement | null, h: () => void): void {
 }
 
 /**
+ * Registers the same handler for 'touch' event, ENTER key and SPACE key.
+ * This utility function simplifies registering handler for buttons,
+ * for which the touchend, mouseup, keyup events should be handled the same way.
+ *
+ * @param id Identifier of the element for which the event handler will be registered.
+ * @param h Event handler to be registered for the element with specified identifier.
+ */
+export function $touchEnterSpace(id: identifier, h: () => void): void {
+    const e = $id(id);
+    $Touch(e, h);
+    $HandleKeyEnter(e, h);
+    $HandleKeySpace(e, h);
+}
+
+/**
  * Deletes all child nodes of specifier element.
  *
  * @param id Identifier of the element whose all child nodes will be deleted.
@@ -352,10 +368,28 @@ export function $SET_TEXT(element: Text, value: string): void {
     element.data = value;
 }
 
-export function $SET_FOCUS(element: HTMLElement): void {
-    setTimeout(() => {
-        element.focus();
-    }, 50);
+/**
+ * Sets the focus on the element with specified identifier.
+ *
+ * @param id Identifier of the element that will gain a focus.
+ */
+export function $setFocus(id: identifier): void {
+    $SetFocus($id(id));
+}
+
+/**
+ * Sets the focus on the specified element.
+ *
+ * @param e HTML element that will gain a focus.
+ */
+export function $SetFocus(e: HTMLElement | null): void {
+    if (e) {
+        setTimeout(() => {
+            e.focus();
+        }, 20);
+    } else {
+        throwElementNotAssigned('$SetFocus');
+    }
 }
 
 export function $APPEND_CHILD_TEXT(element: HTMLElement): Text {
