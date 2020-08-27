@@ -1,0 +1,6 @@
+site:
+  title: Simpa
+  description: Simpa documentation
+  base_url: https://simpa.engos.software
+syntax_highlight:
+  enabled: false

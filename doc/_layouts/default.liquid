@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        {% include "head.liquid" %}
+    </head>
+    <body>
+        <div class="sim-main">
+            <header class="sim-header">
+                {% include "header.liquid" %}
+            </header>
+            <main class="sim-main">
+                <div class="sim-main-container">
+                    <div>
+                        {% include "left.menu.liquid" %}
+                    </div>
+                    <div class="sim-page-content">
+                        {{ page.content }}
+                    </div>
+                </div>
+            </main>
+            <footer class="sim-footer">
+                {% include "footer.liquid" %}
+            </footer>
+        </div>
+    </body>
+</html>
