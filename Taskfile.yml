@@ -1,0 +1,15 @@
+version: '3'
+
+silent: true
+
+tasks:
+
+  build:
+    desc: Builds library
+    cmds:
+      - cmd: npm run build
+
+  test:
+    desc: Runs all tests
+    cmds:
+      - cmd: npm run test
